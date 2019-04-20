@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ImageListServiceImpl implements ImageListService {
+
     @Override
     public ImageListDTO getDecodedImageListDTO(boolean random, Integer resolutionX, Integer resolutionY, List<String> imagesUrls) {
         List<ImageDTO> toReturn = imagesUrls.stream().map(url -> new ImageDTO(url, resolutionX, resolutionY)).collect(Collectors.toList());
