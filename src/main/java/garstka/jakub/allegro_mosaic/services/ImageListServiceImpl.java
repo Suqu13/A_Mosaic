@@ -1,20 +1,33 @@
 package garstka.jakub.allegro_mosaic.services;
 
-import garstka.jakub.allegro_mosaic.api.v1.model.ImageDTO;
-import garstka.jakub.allegro_mosaic.api.v1.model.ImageListDTO;
+import garstka.jakub.allegro_mosaic.tools.ImageManager;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ImageListServiceImpl implements ImageListService {
 
     @Override
-    public ImageListDTO getDecodedImageListDTO(boolean random, Integer resolutionX, Integer resolutionY, List<String> imagesUrls) {
-        List<ImageDTO> toReturn = imagesUrls.stream().map(url -> new ImageDTO(url, resolutionX, resolutionY)).collect(Collectors.toList());
-        if (random) Collections.shuffle(toReturn);
-        return new ImageListDTO(toReturn.size() > 8 ? toReturn.subList(0, 8) : toReturn);
+    public byte[] getMosaic(boolean random, Integer resolutionX, Integer resolutionY, List<String> imagesUrls) throws IOException {
+
+        if (imagesUrls.isEmpty() || imagesUrls.size() > 8) throw new IllegalArgumentException();
+
+        if (random) Collections.shuffle(imagesUrls);
+
+        BufferedImage mosaic = new ImageManager().createMosaic(imagesUrls, resolutionX, resolutionY);
+        ByteArrayOutputStream toUpload = new ByteArrayOutputStream();
+
+        ImageIO.write(mosaic, "jpeg", toUpload);
+        InputStream byteArrayToUpload = new ByteArrayInputStream(toUpload.toByteArray());
+        return IOUtils.toByteArray(byteArrayToUpload);
     }
 }
