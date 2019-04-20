@@ -1,7 +1,7 @@
 package garstka.jakub.allegro_mosaic.controllers.v1;
 
 
-import garstka.jakub.allegro_mosaic.services.ImageListService;
+import garstka.jakub.allegro_mosaic.services.MosaicService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = ImageController.BASE_URL, method = RequestMethod.GET)
-public class ImageController {
+@RequestMapping(value = MosaicController.BASE_URL, method = RequestMethod.GET)
+public class MosaicController {
 
     static final String BASE_URL = "/mozaika";
-    private final ImageListService imageListService;
+    private final MosaicService mosaicService;
 
-    public ImageController(ImageListService imageListService) {
-        this.imageListService = imageListService;
+    public MosaicController(MosaicService mosaicService) {
+        this.mosaicService = mosaicService;
     }
 
     @GetMapping(produces = MediaType.IMAGE_JPEG_VALUE)
@@ -31,7 +31,7 @@ public class ImageController {
         boolean toShuffle = random == 1;
 
         List<Integer> resolutionToScreen = Arrays.stream(resolutionXxY.split("x")).map(Integer::parseInt).collect(Collectors.toList());
-        return imageListService.getMosaic(toShuffle, resolutionToScreen.get(0), resolutionToScreen.get(1), Arrays.asList(imagesUrls.split(",")));
+        return mosaicService.getMosaic(toShuffle, resolutionToScreen.get(0), resolutionToScreen.get(1), Arrays.asList(imagesUrls.split(",")));
     }
 
     @ExceptionHandler(IOException.class)
