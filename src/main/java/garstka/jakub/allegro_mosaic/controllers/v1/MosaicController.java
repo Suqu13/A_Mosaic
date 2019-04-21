@@ -34,6 +34,12 @@ public class MosaicController {
         return mosaicService.getMosaic(toShuffle, resolutionToScreen.get(0), resolutionToScreen.get(1), Arrays.asList(imagesUrls.split(",")));
     }
 
+    @ExceptionHandler(IndexOutOfBoundsException.class)
+    public ResponseEntity<String> oneResolutionValue() {
+        return new ResponseEntity<>("{\"error\": \"Two values of resolution have to be provided\"}", HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(IOException.class)
     public ResponseEntity<String> invalidUrl() {
         return new ResponseEntity<>("{\"error\": \"Invalid URL provided\"}", HttpStatus.BAD_REQUEST);
@@ -44,6 +50,8 @@ public class MosaicController {
         return new ResponseEntity<>("{\"error\": \"Too big resolution provided\"}", HttpStatus.BAD_REQUEST);
     }
 
+
+    //TODO NIE DZIAŁA
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> invalidParameter() {
         return new ResponseEntity<>("{\"error\": \"Invalid parameter provided\"}", HttpStatus.BAD_REQUEST);

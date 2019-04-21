@@ -19,7 +19,7 @@ public class MosaicServiceImpl implements MosaicService {
 
     @Override
     public byte[] getMosaic(boolean random, Integer resolutionX, Integer resolutionY, List<String> imagesUrls) throws IOException {
-        if (imagesUrls.isEmpty() || imagesUrls.size() > 8) throw new IllegalArgumentException();
+        if (imagesUrls.get(0).equals("") || imagesUrls.size() > 8 || resolutionX <= 0 || resolutionY <= 0) throw new IllegalArgumentException();
         if (random) Collections.shuffle(imagesUrls);
         BufferedImage mosaic = new MosaicGeneratorImpl(resolutionX, resolutionY, imagesUrls).createMosaic();
         return convertToByteArray(mosaic);
